@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KITTIPOP — 90s 3D PORTFOLIO</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#101018;color:#e8e8e8;font-family:'VT323',monospace;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9998;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.025) 0,rgba(255,255,255,.025) 1px,transparent 2px,transparent 4px);mix-blend-mode:screen}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9997;box-shadow:inset 0 0 100px rgba(0,0,0,.75)}
+#loading{position:fixed;inset:0;z-index:10000;background:#101018;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:.8s}
+.loading-logo{font-family:'Press Start 2P';font-size:18px;color:#fff;margin-bottom:30px}
+.loading-bar{width:300px;height:18px;border:3px solid #fff;padding:3px}
+.loading-progress{width:0;height:100%;background:#fff;animation:loading 2s forwards}
+@keyframes loading{to{width:100%}}
+.loading-text{margin-top:15px;font-size:20px;color:#aaa}
+#scene{position:fixed;inset:0;z-index:0}
+canvas{display:block}
+.interface{position:relative;z-index:5}
+nav{position:fixed;top:0;left:0;width:100%;padding:14px 5%;display:flex;justify-content:space-between;align-items:center;background:#20202c;border-bottom:4px solid #000;box-shadow:0 5px 0 rgba(255,255,255,.08);z-index:100}
+.logo{font-family:'Press Start 2P';font-size:14px}.logo span{color:#aaa}
+nav ul{display:flex;list-style:none;gap:25px}
+nav a{color:white;text-decoration:none;font-size:20px}
+nav a:hover{text-decoration:underline}
+.hero{height:100vh;display:flex;align-items:center;padding:0 8%}
+.hero-content{width:550px;background:rgba(20,20,30,.88);border:4px solid #fff;padding:30px;box-shadow:10px 10px 0 #000}
+.small-title{font-size:20px;color:#aaa;margin-bottom:20px}
+.hero h1{font-family:'Press Start 2P';font-size:clamp(30px,5vw,55px);line-height:1.5}
+.hero h1 span{color:#999}
+.hero p{font-size:23px;line-height:1.3;color:#bbb;margin-top:20px}
+.buttons{margin-top:25px;display:flex;gap:12px}
+.button{font-family:'VT323';font-size:22px;color:#111;background:#ddd;padding:8px 15px;text-decoration:none;border:3px solid #fff;box-shadow:4px 4px 0 #000}
+.button:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 #000}
+.section{min-height:100vh;padding:130px 8%;background:linear-gradient(#14141d,#0d0d14);border-top:5px solid #000}
+.section-header{display:flex;align-items:center;gap:20px;margin-bottom:50px}
+.section-number{font-family:'Press Start 2P';font-size:12px;color:#777}
+.section-title{font-family:'Press Start 2P';font-size:30px}
+.about{max-width:1100px;display:grid;grid-template-columns:1fr 1fr;gap:50px}
+.about-box{border:4px solid #888;background:#1b1b26;padding:30px;box-shadow:8px 8px 0 #000}
+.about-box p{font-size:24px;line-height:1.4;color:#bbb}
+.info{display:flex;justify-content:space-between;padding:12px 0;border-bottom:2px dashed #555;font-size:22px}
+.info span:first-child{color:#777}.info span:last-child{color:#fff}
+.skills{max-width:1100px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.skill{min-height:180px;padding:25px;background:#1c1c27;border:3px solid #777;box-shadow:6px 6px 0 #000;transition:.2s}
+.skill:hover{transform:translate(-3px,-3px)}
+.skill-number{font-family:'Press Start 2P';font-size:9px;color:#777}
+.skill h3{font-family:'Press Start 2P';font-size:13px;margin-top:35px}
+.skill p{font-size:20px;color:#999;margin-top:15px}
+.projects{max-width:1100px;display:grid;grid-template-columns:repeat(2,1fr);gap:25px}
+.project{min-height:300px;position:relative;overflow:hidden;border:4px solid #888;background:#181822;box-shadow:8px 8px 0 #000;transition:.3s}
+.project:hover{transform:translate(-4px,-4px)}
+.project-art{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:.4}
+.cube{width:120px;height:120px;background:linear-gradient(135deg,#aaa,#333);transform:rotate(45deg);box-shadow:20px 20px 0 #111}
+.project-info{position:absolute;left:25px;bottom:25px}
+.project-type{font-size:18px;color:#777}
+.project h3{font-family:'Press Start 2P';font-size:16px;margin-top:10px}
+.contact{min-height:80vh;display:flex;flex-direction:column;justify-content:center}
+.contact h2{font-family:'Press Start 2P';font-size:clamp(25px,5vw,60px);line-height:1.6;max-width:900px}
+.contact p{font-size:25px;color:#999;margin-top:25px}
+footer{padding:30px 8%;background:#09090d;border-top:4px solid #555;display:flex;justify-content:space-between;font-size:18px;color:#666}
+@media(max-width:800px){nav ul{display:none}.hero{padding:0 5%}.hero-content{width:100%}.about{grid-template-columns:1fr}.skills{grid-template-columns:repeat(2,1fr)}.projects{grid-template-columns:1fr}}
+@media(max-width:500px){.skills{grid-template-columns:1fr}.hero h1{font-size:27px}.hero-content{padding:20px}.section{padding:100px 5%}}
+</style>
+</head>
+<body>
+<div id="loading"><div class="loading-logo">KITTIPOP.EXE</div><div class="loading-bar"><div class="loading-progress"></div></div><div class="loading-text">LOADING 3D PORTFOLIO...</div></div>
+<div id="scene"></div>
+<div class="interface">
+<nav>
+<div class="logo">KC<span>.90</span></div>
+<ul>
+<li><a href="#home">HOME</a></li><li><a href="#about">ABOUT</a></li><li><a href="#skills">SKILLS</a></li><li><a href="#projects">WORK</a></li><li><a href="#contact">CONTACT</a></li>
+</ul>
+</nav>
+
+<section class="hero" id="home">
+<div class="hero-content">
+<div class="small-title">[ 1990s DIGITAL ARTIST ]</div>
+<h1>KITTIPOP <span>CHUMANEE</span></h1>
+<p>Welcome to my 3D portfolio. A small collection of models, environments and game artwork.</p>
+<div class="buttons"><a class="button" href="#projects">VIEW WORK</a><a class="button" href="#about">ABOUT ME</a></div>
+</div>
+</section>
+
+<section class="section" id="about">
+<div class="section-header"><div class="section-number">01</div><h2 class="section-title">ABOUT ME</h2></div>
+<div class="about">
+<div class="about-box">
+<p>Hello! My name is Kittipop Chumanee.</p><br>
+<p>I am interested in 3D Modeling, Game Art, Environment Design and interactive experiences.</p><br>
+<p>This website is designed with inspiration from classic 90s computer graphics and old-school games.</p>
+</div>
+<div class="about-box">
+<div class="info"><span>NAME</span><span>Kittipop</span></div>
+<div class="info"><span>LAST NAME</span><span>Chumanee</span></div>
+<div class="info"><span>NICKNAME</span><span>Pob</span></div>
+<div class="info"><span>AGE</span><span>21</span></div>
+<div class="info"><span>FIELD</span><span>3D / GAME</span></div>
+<div class="info"><span>STYLE</span><span>RETRO / LOW POLY</span></div>
+</div>
+</div>
+</section>
+
+<section class="section" id="skills">
+<div class="section-header"><div class="section-number">02</div><h2 class="section-title">SKILLS</h2></div>
+<div class="skills">
+<div class="skill"><div class="skill-number">01</div><h3>MAYA</h3><p>3D Modeling</p></div>
+<div class="skill"><div class="skill-number">02</div><h3>BLENDER</h3><p>3D / Rendering</p></div>
+<div class="skill"><div class="skill-number">03</div><h3>PHOTOSHOP</h3><p>Texture / Design</p></div>
+<div class="skill"><div class="skill-number">04</div><h3>UNITY</h3><p>Game Development</p></div>
+</div>
+</section>
+
+<section class="section" id="projects">
+<div class="section-header"><div class="section-number">03</div><h2 class="section-title">MY WORK</h2></div>
+<div class="projects">
+<div class="project"><div class="project-art"><div class="cube"></div></div><div class="project-info"><div class="project-type">3D MODEL</div><h3>CHARACTER</h3></div></div>
+<div class="project"><div class="project-art" style="transform:scale(.8) rotate(20deg)"><div class="cube"></div></div><div class="project-info"><div class="project-type">ENVIRONMENT</div><h3>ABANDONED HOUSE</h3></div></div>
+<div class="project"><div class="project-art" style="transform:scale(1.3) rotate(15deg)"><div class="cube"></div></div><div class="project-info"><div class="project-type">GAME ART</div><h3>SURVIVAL GAME</h3></div></div>
+<div class="project"><div class="project-art" style="transform:scale(.65) rotate(70deg)"><div class="cube"></div></div><div class="project-info"><div class="project-type">WEBGL</div><h3>3D PORTFOLIO</h3></div></div>
+</div>
+</section>
+
+<section class="section contact" id="contact">
+<div class="section-header"><div class="section-number">04</div><h2 class="section-title">CONTACT</h2></div>
+<h2>LET'S MAKE<br>SOMETHING<br>COOL.</h2>
+<p>KITTIPOP CHUMANEE / 3D ARTIST</p>
+<div class="buttons"><a href="mailto:your@email.com" class="button">EMAIL</a><a href="#" class="button">INSTAGRAM</a></div>
+</section>
+
+<footer><span>KITTIPOP.EXE</span><span>© 1995 - 2026</span></footer>
+</div>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x101018);
+
+const camera=new THREE.PerspectiveCamera(50,innerWidth/innerHeight,.1,100);
+camera.position.set(5,3,7);
+
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.shadowMap.enabled=true;
+document.getElementById('scene').appendChild(renderer.domElement);
+
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;
+controls.dampingFactor=.05;
+controls.enablePan=false;
+controls.minDistance=4;
+controls.maxDistance=12;
+controls.target.set(0,1,0);
+
+scene.add(new THREE.AmbientLight(0xffffff,.7));
+
+const mainLight=new THREE.DirectionalLight(0xffffff,2);
+mainLight.position.set(4,8,5);
+mainLight.castShadow=true;
+scene.add(mainLight);
+
+const floor=new THREE.Mesh(
+new THREE.PlaneGeometry(30,30),
+new THREE.MeshStandardMaterial({color:0x181822,roughness:.9})
+);
+floor.rotation.x=-Math.PI/2;
+floor.position.y=-1.2;
+floor.receiveShadow=true;
+scene.add(floor);
+
+const grid=new THREE.GridHelper(30,30,0x777777,0x292933);
+grid.position.y=-1.18;
+scene.add(grid);
+
+const objectGroup=new THREE.Group();
+scene.add(objectGroup);
+
+const object=new THREE.Mesh(
+new THREE.IcosahedronGeometry(1.4,1),
+new THREE.MeshStandardMaterial({color:0xaaaaaa,roughness:.65,metalness:.15,flatShading:true})
+);
+object.castShadow=true;
+objectGroup.add(object);
+
+const wire=new THREE.Mesh(
+new THREE.IcosahedronGeometry(1.48,1),
+new THREE.MeshBasicMaterial({color:0xeeeeee,wireframe:true,transparent:true,opacity:.18})
+);
+objectGroup.add(wire);
+
+const ring=new THREE.Mesh(
+new THREE.TorusGeometry(2,.025,8,64),
+new THREE.MeshBasicMaterial({color:0xaaaaaa})
+);
+ring.rotation.x=Math.PI/2;
+objectGroup.add(ring);
+
+const ring2=new THREE.Mesh(
+new THREE.TorusGeometry(2.4,.018,8,64),
+new THREE.MeshBasicMaterial({color:0x666666})
+);
+ring2.rotation.y=Math.PI/3;
+objectGroup.add(ring2);
+
+const cubes=new THREE.Group();
+scene.add(cubes);
+for(let i=0;i<35;i++){
+const size=.05+Math.random()*.12;
+const cube=new THREE.Mesh(
+new THREE.BoxGeometry(size,size,size),
+new THREE.MeshBasicMaterial({color:0x888888})
+);
+cube.position.set((Math.random()-.5)*12,Math.random()*7,(Math.random()-.5)*10);
+cube.rotation.set(Math.random()*Math.PI,Math.random()*Math.PI,Math.random()*Math.PI);
+cubes.add(cube);
+}
+
+const clock=new THREE.Clock();
+function animate(){
+requestAnimationFrame(animate);
+const t=clock.getElapsedTime();
+objectGroup.rotation.y=t*.25;
+objectGroup.rotation.x=Math.sin(t*.4)*.12;
+object.position.y=Math.sin(t)*.15;
+ring.rotation.z=t*.4;
+ring2.rotation.x=t*.25;
+cubes.rotation.y=t*.015;
+controls.update();
+renderer.render(scene,camera);
+}
+animate();
+
+addEventListener('resize',()=>{
+camera.aspect=innerWidth/innerHeight;
+camera.updateProjectionMatrix();
+renderer.setSize(innerWidth,innerHeight);
+});
+
+addEventListener('load',()=>{
+setTimeout(()=>{
+const loader=document.getElementById('loading');
+loader.style.opacity='0';
+setTimeout(()=>loader.style.display='none',800);
+},2200);
+});
+</script>
+</body>
+</html>
