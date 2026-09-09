@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kittipop Chumanee — 3D Portfolio</title>
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080808;color:#f5f0e6;font-family:Arial,Helvetica,sans-serif}
+    #app{position:fixed;inset:0}
+    canvas{display:block}
+    .ui{position:fixed;inset:0;pointer-events:none}
+    header{position:absolute;top:28px;left:34px;right:34px;display:flex;justify-content:space-between;align-items:center}
+    .logo{font-weight:900;letter-spacing:.08em;font-size:15px}
+    .logo span{opacity:.45}
+    .counter{font-family:monospace;font-size:12px;opacity:.65}
+    .hero{position:absolute;left:7vw;top:50%;transform:translateY(-50%);max-width:590px}
+    .eyebrow{font-family:monospace;font-size:12px;letter-spacing:.25em;text-transform:uppercase;opacity:.55;margin-bottom:18px}
+    h1{font-size:clamp(54px,8vw,118px);line-height:.82;margin:0;letter-spacing:-.07em;font-weight:900}
+    h1 em{font-style:normal;color:#c9ff42}
+    .intro{max-width:470px;font-size:15px;line-height:1.7;opacity:.68;margin-top:28px}
+    .buttons{display:flex;gap:12px;margin-top:25px;pointer-events:auto}
+    button{border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.3);color:white;padding:12px 18px;border-radius:2px;cursor:pointer;font-size:12px;letter-spacing:.08em}
+    button:hover{background:#c9ff42;color:#111;border-color:#c9ff42}
+    .panel{position:absolute;right:34px;bottom:34px;width:260px;border-top:1px solid rgba(255,255,255,.25);padding-top:14px}
+    .panel b{font-size:11px;letter-spacing:.15em}
+    .panel p{font-size:12px;line-height:1.6;opacity:.55;margin:8px 0 0}
+    .hint{position:absolute;left:34px;bottom:34px;font-family:monospace;font-size:11px;opacity:.4}
+    .grain{position:absolute;inset:0;opacity:.06;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E")}
+    .tag{display:inline-block;margin-right:8px;padding:5px 8px;border:1px solid rgba(255,255,255,.12);font-size:10px;opacity:.5}
+    @media(max-width:800px){.hero{left:8vw;right:8vw}.panel{display:none}.hint{bottom:20px;left:20px}header{left:20px;right:20px}.intro{font-size:13px}}
+  </style>
+</head>
+<body>
+<div id="app"></div>
+<div class="ui">
+  <header><div class="logo">KITTIPOP <span>/ 3D PORTFOLIO</span></div><div class="counter">2026 — SELECTED WORKS</div></header>
+  <main class="hero">
+    <div class="eyebrow">3D ARTIST / GAME DESIGN / VISUAL</div>
+    <h1>KITTI<br><em>POP.</em></h1>
+    <div class="intro">Portfolio showcase for 3D modeling, game assets and visual experiments. Drag to rotate the scene, scroll to zoom, and explore the work.</div>
+    <div class="buttons">
+      <button id="focusBtn">FOCUS OBJECT</button>
+      <button id="resetBtn">RESET VIEW</button>
+    </div>
+    <div style="margin-top:18px"><span class="tag">MAYA</span><span class="tag">BLENDER</span><span class="tag">THREE.JS</span></div>
+  </main>
+  <div class="panel"><b>ABOUT THE SCENE</b><p>A minimal studio built entirely in the browser. The central objects represent a small 3D portfolio: character, prop and environment studies.</p></div>
+  <div class="hint">DRAG / ROTATE &nbsp;&nbsp; SCROLL / ZOOM</div>
+  <div class="grain"></div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const app=document.getElementById('app');
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x080808);
+scene.fog=new THREE.Fog(0x080808,10,24);
+
+const camera=new THREE.PerspectiveCamera(42,innerWidth/innerHeight,.1,100);
+camera.position.set(7,4.8,9);
+
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth,innerHeight);
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.1;
+app.appendChild(renderer.domElement);
+
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;
+controls.dampingFactor=.06;
+controls.minDistance=4;
+controls.maxDistance=16;
+controls.target.set(0,1,0);
+
+scene.add(new THREE.HemisphereLight(0xbfd3ff,0x18130c,1.7));
+const key=new THREE.DirectionalLight(0xffffff,4);
+key.position.set(4,8,5); key.castShadow=true; scene.add(key);
+const rim=new THREE.PointLight(0xc9ff42,18,9); rim.position.set(-4,3,-3); scene.add(rim);
+const warm=new THREE.PointLight(0xff8a4c,12,8); warm.position.set(4,2,-4); scene.add(warm);
+
+const mat=(color,rough=.5,metal=0)=>new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal});
+const floorMat=mat(0x141414,.72,0);
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(40,40),floorMat);
+floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; scene.add(floor);
+
+const grid=new THREE.GridHelper(30,30,0x333333,0x1b1b1b);
+grid.position.y=.012; grid.material.transparent=true; grid.material.opacity=.35; scene.add(grid);
+
+function box(w,h,d,color,x,y,z,rx=0,ry=0,rz=0){
+  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(color,.38,.15));
+  m.position.set(x,y,z); m.rotation.set(rx,ry,rz); m.castShadow=m.receiveShadow=true; scene.add(m); return m;
+}
+function sphere(r,color,x,y,z){
+  const m=new THREE.Mesh(new THREE.SphereGeometry(r,32,20),mat(color,.32,.1));
+  m.position.set(x,y,z); m.castShadow=m.receiveShadow=true; scene.add(m); return m;
+}
+
+// Central "character bust" made from primitives, so the file works without external model assets.
+const character=new THREE.Group(); character.position.set(0,0,0); scene.add(character);
+const body=new THREE.Mesh(new THREE.CapsuleGeometry(.82,1.65,8,24),mat(0x777777,.34,.25));
+body.position.y=1.25; body.castShadow=true; character.add(body);
+const head=new THREE.Mesh(new THREE.SphereGeometry(.62,32,20),mat(0xb5b5b5,.28,.08));
+head.position.y=2.85; head.castShadow=true; character.add(head);
+const visor=new THREE.Mesh(new THREE.BoxGeometry(.72,.22,.16),mat(0xc9ff42,.18,.5));
+visor.position.set(0,2.88,.56); visor.castShadow=true; character.add(visor);
+const shoulderL=box(.7,.42,.62,0x4b4b4b,-.8,1.85,0);
+const shoulderR=box(.7,.42,.62,0x4b4b4b,.8,1.85,0);
+const armL=new THREE.Mesh(new THREE.CapsuleGeometry(.2,.95,6,12),mat(0x5a5a5a,.42,.2)); armL.position.set(-1.05,1.15,0); armL.rotation.z=-.12; armL.castShadow=true; character.add(armL);
+const armR=armL.clone(); armR.position.x=1.05; armR.rotation.z=.12; character.add(armR);
+
+// Prop studies around the character
+const cube=box(1.15,1.15,1.15,0xdddddd,3.1,.58,.2,0,.35,0);
+const torus=new THREE.Mesh(new THREE.TorusGeometry(.62,.15,18,48),mat(0xc9ff42,.25,.35));
+torus.position.set(-3,.9,.5); torus.rotation.x=Math.PI/2; torus.castShadow=true; scene.add(torus);
+
+const pedestal=box(3.2,.35,2.3,0x202020,0,.175,0);
+pedestal.position.y=.18;
+
+const wire=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(3.4,3.7,3.4)),new THREE.LineBasicMaterial({color:0x555555,transparent:true,opacity:.2}));
+wire.position.set(0,1.85,0); scene.add(wire);
+
+const stars=new THREE.Points(
+ new THREE.BufferGeometry(),
+ new THREE.PointsMaterial({color:0xc9ff42,size:.035,transparent:true,opacity:.5})
+);
+const pts=[];
+for(let i=0;i<700;i++){pts.push((Math.random()-.5)*30,Math.random()*12+.2,(Math.random()-.5)*30)}
+stars.geometry.setAttribute('position',new THREE.Float32BufferAttribute(pts,3)); scene.add(stars);
+
+const clock=new THREE.Clock();
+const startPos=camera.position.clone();
+document.getElementById('resetBtn').onclick=()=>{
+  camera.position.copy(startPos); controls.target.set(0,1,0); controls.update();
+};
+document.getElementById('focusBtn').onclick=()=>{
+  camera.position.set(4.5,3.2,6.2); controls.target.set(0,1.5,0); controls.update();
+};
+
+function animate(){
+  requestAnimationFrame(animate);
+  const t=clock.getElapsedTime();
+  character.rotation.y=Math.sin(t*.45)*.09;
+  torus.rotation.z=t*.5;
+  cube.rotation.y=t*.35;
+  cube.rotation.x=Math.sin(t*.4)*.12;
+  stars.rotation.y=t*.015;
+  controls.update();
+  renderer.render(scene,camera);
+}
+animate();
+
+addEventListener('resize',()=>{
+ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
+ renderer.setSize(innerWidth,innerHeight);
+});
+</script>
+</body>
+</html>
