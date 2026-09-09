@@ -1,527 +1,720 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kittipop Chumanee — 3D Portfolio</title>
+
+<title>Kittipop Chumanee | 3D Portfolio</title>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Rajdhani:wght@400;500;600;700&display=swap');
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-html {
-    scroll-behavior: smooth;
+html{
+    scroll-behavior:smooth;
 }
 
-body {
-    background: #080b0b;
-    color: #d9e0d9;
-    font-family: 'Rajdhani', sans-serif;
-    overflow-x: hidden;
+body{
+    background:#070909;
+    color:#e4e9e3;
+    font-family:'Rajdhani',sans-serif;
+    overflow-x:hidden;
 }
 
-#canvas-container {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
+/* =========================
+   3D BACKGROUND
+========================= */
+
+#scene{
+    position:fixed;
+    inset:0;
+    z-index:0;
 }
 
-canvas {
-    display: block;
+#scene canvas{
+    display:block;
 }
 
-.overlay {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 2;
+/* =========================
+   SCREEN EFFECT
+========================= */
+
+.scanlines{
+    position:fixed;
+    inset:0;
+    z-index:20;
+    pointer-events:none;
+    opacity:.07;
+
     background:
-        linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
-    background-size: 50px 50px;
-}
-
-.overlay::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-        radial-gradient(circle at center, transparent 25%, rgba(0,0,0,.35) 100%);
-}
-
-.scanlines {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 20;
-    opacity: .08;
-    background: repeating-linear-gradient(
+    repeating-linear-gradient(
         to bottom,
         transparent 0px,
         transparent 3px,
-        rgba(255,255,255,.12) 4px
+        rgba(255,255,255,.25) 4px
     );
 }
 
-nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 80px;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 6vw;
-    background: linear-gradient(
-        to bottom,
-        rgba(5,8,8,.9),
+.vignette{
+    position:fixed;
+    inset:0;
+    z-index:5;
+    pointer-events:none;
+
+    background:
+    radial-gradient(
+        circle,
+        transparent 35%,
+        rgba(0,0,0,.65) 100%
+    );
+}
+
+.grid-overlay{
+    position:fixed;
+    inset:0;
+    z-index:4;
+    pointer-events:none;
+    opacity:.12;
+
+    background-image:
+    linear-gradient(rgba(180,200,70,.12) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(180,200,70,.12) 1px,transparent 1px);
+
+    background-size:70px 70px;
+}
+
+/* =========================
+   NAVIGATION
+========================= */
+
+nav{
+    position:fixed;
+    top:0;
+    left:0;
+
+    width:100%;
+    height:80px;
+
+    padding:0 6vw;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    z-index:10;
+
+    background:
+    linear-gradient(
+        rgba(5,7,7,.95),
         transparent
     );
 }
 
-.logo {
-    font-family: Orbitron;
-    font-weight: 800;
-    letter-spacing: 4px;
-    color: #e8eee8;
-    font-size: 18px;
+.logo{
+    font-family:'Orbitron';
+    font-size:17px;
+    font-weight:800;
+    letter-spacing:4px;
 }
 
-.logo span {
-    color: #c9d83d;
+.logo span{
+    color:#c9d83d;
 }
 
-.nav-links {
-    display: flex;
-    gap: 30px;
-    list-style: none;
+nav ul{
+    display:flex;
+    gap:35px;
+    list-style:none;
 }
 
-.nav-links a {
-    color: #aab2aa;
-    text-decoration: none;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-size: 13px;
-    transition: .3s;
+nav a{
+    color:#9ba39c;
+    text-decoration:none;
+
+    font-size:12px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+
+    transition:.3s;
 }
 
-.nav-links a:hover {
-    color: #d5e43e;
+nav a:hover{
+    color:#d6e641;
 }
 
-.hero {
-    position: relative;
-    z-index: 3;
-    height: 100vh;
-    min-height: 700px;
-    display: flex;
-    align-items: center;
-    padding: 0 8vw;
+/* =========================
+   HERO
+========================= */
+
+.hero{
+    position:relative;
+    z-index:6;
+
+    height:100vh;
+    min-height:680px;
+
+    display:flex;
+    align-items:center;
+
+    padding:0 8vw;
+
+    pointer-events:none;
 }
 
-.hero-content {
-    max-width: 650px;
+.hero-content{
+    max-width:620px;
 }
 
-.classification {
-    color: #a9bb35;
-    font-family: Orbitron;
-    letter-spacing: 5px;
-    font-size: 12px;
-    margin-bottom: 20px;
+.system{
+    color:#9eaf2c;
+
+    font-family:'Orbitron';
+
+    font-size:11px;
+    letter-spacing:5px;
+
+    margin-bottom:22px;
 }
 
-h1 {
-    font-family: Orbitron;
-    font-size: clamp(42px, 7vw, 92px);
-    line-height: .95;
-    letter-spacing: -3px;
-    text-transform: uppercase;
-    color: #edf0e9;
-    text-shadow: 0 0 30px rgba(201,216,61,.08);
+h1{
+    font-family:'Orbitron';
+
+    font-size:
+    clamp(42px,7vw,90px);
+
+    line-height:.92;
+
+    letter-spacing:-4px;
+
+    text-transform:uppercase;
 }
 
-h1 span {
-    color: #cbd83d;
+h1 span{
+    color:#cbd83d;
 }
 
-.subtitle {
-    margin-top: 25px;
-    max-width: 560px;
-    color: #9da69e;
-    font-size: 19px;
-    line-height: 1.5;
+.subtitle{
+    margin-top:25px;
+
+    color:#9da59e;
+
+    font-size:19px;
+
+    line-height:1.5;
+
+    max-width:530px;
 }
 
-.hero-buttons {
-    margin-top: 35px;
-    display: flex;
-    gap: 15px;
+.buttons{
+    margin-top:35px;
+
+    display:flex;
+    gap:15px;
+
+    pointer-events:auto;
 }
 
-.btn {
-    text-decoration: none;
-    color: #101313;
-    background: #cbd83d;
-    padding: 13px 25px;
-    font-family: Orbitron;
-    font-size: 11px;
-    letter-spacing: 2px;
-    font-weight: 700;
-    clip-path: polygon(
-        8px 0,
+.btn{
+    display:inline-block;
+
+    padding:13px 25px;
+
+    text-decoration:none;
+
+    background:#cbd83d;
+    color:#101313;
+
+    font-family:'Orbitron';
+
+    font-size:10px;
+    font-weight:700;
+
+    letter-spacing:2px;
+
+    transition:.3s;
+
+    clip-path:
+    polygon(
+        9px 0,
         100% 0,
-        100% calc(100% - 8px),
-        calc(100% - 8px) 100%,
+        100% calc(100% - 9px),
+        calc(100% - 9px) 100%,
         0 100%,
-        0 8px
+        0 9px
     );
-    transition: .3s;
 }
 
-.btn:hover {
-    background: #effb63;
-    transform: translateY(-3px);
+.btn:hover{
+    transform:translateY(-4px);
+    background:#edf45c;
 }
 
-.btn.secondary {
-    color: #cbd83d;
-    background: rgba(10,14,14,.65);
-    border: 1px solid #536018;
+.btn.dark{
+    color:#cbd83d;
+    background:rgba(10,13,13,.7);
+    border:1px solid #59621d;
 }
 
-.status-panel {
-    position: absolute;
-    right: 7vw;
-    bottom: 8vh;
-    width: 270px;
-    border-left: 2px solid #cbd83d;
-    padding: 15px 20px;
-    background: rgba(8,12,12,.7);
-    backdrop-filter: blur(8px);
+/* =========================
+   HUD
+========================= */
+
+.hud{
+    position:absolute;
+
+    right:7vw;
+    bottom:8vh;
+
+    width:280px;
+
+    border-left:2px solid #cbd83d;
+
+    padding:18px 20px;
+
+    background:rgba(5,8,8,.65);
+
+    backdrop-filter:blur(8px);
 }
 
-.status-title {
-    color: #cbd83d;
-    font-family: Orbitron;
-    font-size: 10px;
-    letter-spacing: 3px;
+.hud-title{
+    font-family:'Orbitron';
+
+    color:#cbd83d;
+
+    font-size:9px;
+
+    letter-spacing:3px;
 }
 
-.status-line {
-    margin-top: 12px;
-    display: flex;
-    justify-content: space-between;
-    color: #8f9890;
-    font-size: 13px;
+.hud-row{
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-top:13px;
+
+    font-size:12px;
+
+    color:#737c74;
 }
 
-.status-line strong {
-    color: #dce4dc;
+.hud-row strong{
+    color:#d9e0d8;
 }
 
-section {
-    position: relative;
-    z-index: 4;
-    min-height: 100vh;
-    padding: 120px 8vw;
-    background: linear-gradient(
+.hint{
+    position:absolute;
+
+    bottom:30px;
+    left:8vw;
+
+    color:#69716a;
+
+    font-size:10px;
+
+    letter-spacing:3px;
+}
+
+/* =========================
+   SECTIONS
+========================= */
+
+section{
+    position:relative;
+    z-index:7;
+
+    min-height:100vh;
+
+    padding:120px 8vw;
+
+    background:
+    linear-gradient(
         to bottom,
         transparent,
-        rgba(5,8,8,.95) 12%,
-        rgba(5,8,8,.98)
+        rgba(5,8,8,.96) 15%
     );
 }
 
-.section-label {
-    color: #a9bb35;
-    font-family: Orbitron;
-    font-size: 11px;
-    letter-spacing: 4px;
-    margin-bottom: 12px;
+.label{
+    color:#a9b82f;
+
+    font-family:'Orbitron';
+
+    font-size:10px;
+
+    letter-spacing:4px;
+
+    margin-bottom:12px;
 }
 
-.section-title {
-    font-family: Orbitron;
-    font-size: clamp(30px, 5vw, 55px);
-    text-transform: uppercase;
-    margin-bottom: 50px;
+.title{
+    font-family:'Orbitron';
+
+    font-size:
+    clamp(32px,5vw,58px);
+
+    text-transform:uppercase;
+
+    margin-bottom:50px;
 }
 
-.about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    max-width: 1100px;
+/* =========================
+   ABOUT
+========================= */
+
+.about{
+    display:grid;
+
+    grid-template-columns:
+    1fr 1fr;
+
+    gap:80px;
+
+    max-width:1100px;
 }
 
-.about-text {
-    color: #9da69e;
-    font-size: 18px;
-    line-height: 1.7;
+.about-text{
+    color:#919a92;
+
+    font-size:18px;
+
+    line-height:1.75;
 }
 
-.about-text strong {
-    color: #d9e33e;
+.about-text strong{
+    color:#d4df43;
 }
 
-.info-box {
-    border: 1px solid #293029;
-    background: rgba(15,19,18,.75);
-    padding: 30px;
-    position: relative;
+.data{
+    border:1px solid #2b322d;
+
+    background:rgba(13,17,16,.8);
+
+    padding:30px;
+
+    position:relative;
 }
 
-.info-box::before {
-    content: "PERSONNEL DATA";
-    position: absolute;
-    top: -10px;
-    left: 20px;
-    padding: 0 8px;
-    background: #080b0b;
-    color: #77831f;
-    font-family: Orbitron;
-    font-size: 9px;
-    letter-spacing: 2px;
+.data::before{
+    content:'PERSONNEL DATABASE';
+
+    position:absolute;
+
+    top:-9px;
+    left:20px;
+
+    padding:0 8px;
+
+    background:#070909;
+
+    color:#68751f;
+
+    font-family:'Orbitron';
+
+    font-size:8px;
+
+    letter-spacing:2px;
 }
 
-.info-row {
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid #252b25;
-    padding: 14px 0;
+.data-row{
+    display:flex;
+
+    justify-content:space-between;
+
+    padding:15px 0;
+
+    border-bottom:1px solid #242a25;
 }
 
-.info-row:last-child {
-    border: none;
+.data-row:last-child{
+    border-bottom:0;
 }
 
-.info-row span:first-child {
-    color: #667067;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-size: 12px;
+.data-row span:first-child{
+    color:#667067;
+
+    text-transform:uppercase;
+
+    letter-spacing:2px;
+
+    font-size:11px;
 }
 
-.info-row span:last-child {
-    color: #d8ded8;
+.data-row span:last-child{
+    color:#dce2db;
 }
 
-.skills {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    max-width: 1100px;
+/* =========================
+   SKILLS
+========================= */
+
+.skills{
+    display:grid;
+
+    grid-template-columns:
+    repeat(3,1fr);
+
+    gap:20px;
+
+    max-width:1100px;
 }
 
-.skill-card {
-    min-height: 190px;
-    padding: 28px;
-    border: 1px solid #293029;
-    background: rgba(13,17,16,.8);
-    transition: .3s;
+.skill{
+    min-height:190px;
+
+    border:1px solid #293029;
+
+    background:rgba(12,16,15,.85);
+
+    padding:27px;
+
+    transition:.3s;
 }
 
-.skill-card:hover {
-    border-color: #718022;
-    transform: translateY(-5px);
+.skill:hover{
+    transform:translateY(-6px);
+
+    border-color:#7b8725;
 }
 
-.skill-number {
-    color: #59651a;
-    font-family: Orbitron;
-    font-size: 12px;
+.skill-num{
+    color:#58651b;
+
+    font-family:'Orbitron';
+
+    font-size:10px;
 }
 
-.skill-card h3 {
-    margin-top: 25px;
-    color: #dce3dc;
-    font-family: Orbitron;
-    font-size: 17px;
+.skill h3{
+    margin-top:25px;
+
+    font-family:'Orbitron';
+
+    font-size:16px;
 }
 
-.skill-card p {
-    margin-top: 12px;
-    color: #7e8880;
-    line-height: 1.5;
+.skill p{
+    margin-top:12px;
+
+    color:#7d877f;
+
+    line-height:1.5;
 }
 
-.projects {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
+/* =========================
+   PROJECTS
+========================= */
+
+.projects{
+    display:grid;
+
+    grid-template-columns:
+    repeat(3,1fr);
+
+    gap:25px;
 }
 
-.project {
-    min-height: 350px;
-    border: 1px solid #2a312b;
-    position: relative;
-    overflow: hidden;
+.project{
+    height:360px;
+
+    position:relative;
+
+    overflow:hidden;
+
+    border:1px solid #2b322d;
+
     background:
-        linear-gradient(
-            135deg,
-            rgba(119,130,31,.15),
-            transparent 50%
-        ),
-        #101412;
+    radial-gradient(
+        circle at 50% 30%,
+        rgba(150,170,45,.15),
+        transparent 50%
+    ),
+    #101413;
+
+    transition:.3s;
 }
 
-.project-number {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    font-family: Orbitron;
-    color: #66731e;
+.project:hover{
+    transform:translateY(-7px);
+
+    border-color:#7b8725;
 }
 
-.project-content {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    padding: 25px;
-    background: linear-gradient(transparent, #090c0c);
+.project::before{
+    content:'';
+
+    position:absolute;
+
+    inset:20px;
+
+    border:1px solid rgba(180,195,65,.12);
 }
 
-.project h3 {
-    font-family: Orbitron;
-    font-size: 20px;
+.project-number{
+    position:absolute;
+
+    top:20px;
+    left:20px;
+
+    color:#69751e;
+
+    font-family:'Orbitron';
+
+    font-size:11px;
 }
 
-.project p {
-    margin-top: 8px;
-    color: #7e8981;
+.project-content{
+    position:absolute;
+
+    bottom:0;
+
+    width:100%;
+
+    padding:25px;
+
+    background:
+    linear-gradient(
+        transparent,
+        #090c0c
+    );
 }
 
-.project-tag {
-    display: inline-block;
-    margin-top: 15px;
-    border: 1px solid #4e5918;
-    color: #aebd35;
-    padding: 5px 9px;
-    font-size: 10px;
-    letter-spacing: 1px;
+.project h3{
+    font-family:'Orbitron';
+
+    font-size:19px;
 }
 
-.contact {
-    min-height: 80vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+.project p{
+    margin-top:8px;
+
+    color:#7f8981;
 }
 
-.contact h2 {
-    font-family: Orbitron;
-    font-size: clamp(35px, 6vw, 70px);
+.tag{
+    display:inline-block;
+
+    margin-top:15px;
+
+    border:1px solid #535e1b;
+
+    padding:5px 9px;
+
+    color:#b6c43a;
+
+    font-size:9px;
+
+    letter-spacing:2px;
 }
 
-.contact p {
-    color: #858f87;
-    margin: 20px auto 35px;
-    max-width: 600px;
-    font-size: 18px;
+/* =========================
+   CONTACT
+========================= */
+
+.contact{
+    min-height:75vh;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
 }
 
-footer {
-    position: relative;
-    z-index: 4;
-    padding: 25px 8vw;
-    border-top: 1px solid #202620;
-    color: #596159;
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    letter-spacing: 1px;
+.contact h2{
+    font-family:'Orbitron';
+
+    font-size:
+    clamp(38px,6vw,75px);
+
+    line-height:1;
 }
 
-.corner {
-    position: fixed;
-    z-index: 6;
-    width: 25px;
-    height: 25px;
-    pointer-events: none;
+.green{
+    color:#cbd83d;
 }
 
-.corner.tl {
-    top: 20px;
-    left: 20px;
-    border-top: 1px solid #9dac2e;
-    border-left: 1px solid #9dac2e;
+.contact p{
+    max-width:600px;
+
+    margin:25px auto 35px;
+
+    color:#858e87;
+
+    font-size:18px;
 }
 
-.corner.tr {
-    top: 20px;
-    right: 20px;
-    border-top: 1px solid #9dac2e;
-    border-right: 1px solid #9dac2e;
+/* =========================
+   FOOTER
+========================= */
+
+footer{
+    position:relative;
+
+    z-index:8;
+
+    padding:25px 8vw;
+
+    border-top:1px solid #202620;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    color:#596159;
+
+    font-size:11px;
+
+    letter-spacing:2px;
 }
 
-.corner.bl {
-    bottom: 20px;
-    left: 20px;
-    border-bottom: 1px solid #9dac2e;
-    border-left: 1px solid #9dac2e;
-}
+/* =========================
+   MOBILE
+========================= */
 
-.corner.br {
-    bottom: 20px;
-    right: 20px;
-    border-bottom: 1px solid #9dac2e;
-    border-right: 1px solid #9dac2e;
-}
+@media(max-width:850px){
 
-.mouse-hint {
-    position: absolute;
-    left: 8vw;
-    bottom: 30px;
-    color: #687169;
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-}
-
-@media(max-width: 800px) {
-    .nav-links {
-        display: none;
+    nav ul{
+        display:none;
     }
 
-    .hero {
-        padding: 0 7vw;
+    .hero{
+        padding:0 7vw;
     }
 
-    .status-panel {
-        display: none;
+    .hud{
+        display:none;
     }
 
-    .about-grid,
+    .hint{
+        left:7vw;
+    }
+
+    section{
+        padding:90px 7vw;
+    }
+
+    .about,
     .skills,
-    .projects {
-        grid-template-columns: 1fr;
+    .projects{
+        grid-template-columns:1fr;
     }
 
-    section {
-        padding: 90px 7vw;
+    .project{
+        height:300px;
     }
 
-    .hero-content {
-        margin-top: 30px;
-    }
-
-    .mouse-hint {
-        left: 7vw;
-    }
-
-    footer {
-        flex-direction: column;
-        gap: 10px;
+    footer{
+        flex-direction:column;
+        gap:10px;
     }
 }
 </style>
@@ -529,33 +722,43 @@ footer {
 
 <body>
 
-<div id="canvas-container"></div>
-<div class="overlay"></div>
+<!-- 3D -->
+<div id="scene"></div>
+
+<div class="grid-overlay"></div>
+<div class="vignette"></div>
 <div class="scanlines"></div>
 
-<div class="corner tl"></div>
-<div class="corner tr"></div>
-<div class="corner bl"></div>
-<div class="corner br"></div>
+
+<!-- =========================
+     NAV
+========================= -->
 
 <nav>
-    <div class="logo">KITTIPOP<span>_01</span></div>
 
-    <ul class="nav-links">
+    <div class="logo">
+        KITTIPOP<span>_01</span>
+    </div>
+
+    <ul>
         <li><a href="#about">About</a></li>
         <li><a href="#skills">Skills</a></li>
         <li><a href="#projects">Projects</a></li>
         <li><a href="#contact">Contact</a></li>
     </ul>
+
 </nav>
 
-<main>
+
+<!-- =========================
+     HERO
+========================= -->
 
 <section class="hero">
 
     <div class="hero-content">
 
-        <div class="classification">
+        <div class="system">
             // PORTFOLIO SYSTEM ONLINE
         </div>
 
@@ -567,69 +770,87 @@ footer {
         <p class="subtitle">
             3D Artist / Game Designer / Creative Developer
             <br>
-            Building worlds beyond the surface.
+            Creating digital worlds through art,
+            technology and imagination.
         </p>
 
-        <div class="hero-buttons">
-            <a href="#projects" class="btn">
+        <div class="buttons">
+
+            <a class="btn" href="#projects">
                 VIEW PROJECTS
             </a>
 
-            <a href="#about" class="btn secondary">
+            <a class="btn dark" href="#about">
                 PERSONNEL FILE
             </a>
+
         </div>
 
     </div>
 
-    <div class="status-panel">
-        <div class="status-title">
+
+    <div class="hud">
+
+        <div class="hud-title">
             SYSTEM STATUS
         </div>
 
-        <div class="status-line">
+        <div class="hud-row">
             <span>IDENTITY</span>
             <strong>ACTIVE</strong>
         </div>
 
-        <div class="status-line">
+        <div class="hud-row">
+            <span>ROLE</span>
+            <strong>3D ARTIST</strong>
+        </div>
+
+        <div class="hud-row">
             <span>LOCATION</span>
             <strong>THAILAND</strong>
         </div>
 
-        <div class="status-line">
+        <div class="hud-row">
             <span>MISSION</span>
             <strong>CREATE</strong>
         </div>
 
-        <div class="status-line">
+        <div class="hud-row">
             <span>STATUS</span>
             <strong>ONLINE</strong>
         </div>
+
     </div>
 
-    <div class="mouse-hint">
-        ◈ DRAG TO ROTATE 3D ENVIRONMENT
+
+    <div class="hint">
+        ◈ DRAG TO ROTATE CHARACTER
     </div>
 
 </section>
 
 
+<!-- =========================
+     ABOUT
+========================= -->
+
 <section id="about">
 
-    <div class="section-label">
+    <div class="label">
         01 / PERSONNEL
     </div>
 
-    <div class="section-title">
+    <div class="title">
         About Me
     </div>
 
-    <div class="about-grid">
+
+    <div class="about">
 
         <div class="about-text">
+
             <p>
-                Hello. My name is
+                Hello, my name is
                 <strong>Kittipop Chumanee</strong>.
             </p>
 
@@ -644,36 +865,38 @@ footer {
             <br>
 
             <p>
-                My goal is to create immersive
-                digital worlds that combine
-                storytelling, visual design and
-                technology.
+                I enjoy creating visual worlds,
+                characters and environments that
+                can communicate stories through
+                interactive experiences.
             </p>
+
         </div>
 
-        <div class="info-box">
 
-            <div class="info-row">
+        <div class="data">
+
+            <div class="data-row">
                 <span>Name</span>
                 <span>Kittipop Chumanee</span>
             </div>
 
-            <div class="info-row">
+            <div class="data-row">
                 <span>Nickname</span>
                 <span>Pob</span>
             </div>
 
-            <div class="info-row">
-                <span>Role</span>
+            <div class="data-row">
+                <span>Field</span>
                 <span>3D / Game Design</span>
             </div>
 
-            <div class="info-row">
+            <div class="data-row">
                 <span>Focus</span>
                 <span>Game Development</span>
             </div>
 
-            <div class="info-row">
+            <div class="data-row">
                 <span>Origin</span>
                 <span>Thailand</span>
             </div>
@@ -685,21 +908,30 @@ footer {
 </section>
 
 
+<!-- =========================
+     SKILLS
+========================= -->
+
 <section id="skills">
 
-    <div class="section-label">
+    <div class="label">
         02 / EQUIPMENT
     </div>
 
-    <div class="section-title">
+    <div class="title">
         Skills
     </div>
 
+
     <div class="skills">
 
-        <div class="skill-card">
-            <div class="skill-number">SYS_01</div>
-            <h3>3D MODELING</h3>
+        <div class="skill">
+            <div class="skill-num">SYS_01</div>
+
+            <h3>
+                3D MODELING
+            </h3>
+
             <p>
                 Character, environment and
                 prop modeling for games and
@@ -707,52 +939,76 @@ footer {
             </p>
         </div>
 
-        <div class="skill-card">
-            <div class="skill-number">SYS_02</div>
-            <h3>GAME DESIGN</h3>
+
+        <div class="skill">
+            <div class="skill-num">SYS_02</div>
+
+            <h3>
+                GAME DESIGN
+            </h3>
+
             <p>
-                Designing gameplay systems,
-                environments, mechanics and
-                player experiences.
+                Gameplay concepts, mechanics,
+                level design and player
+                experience.
             </p>
         </div>
 
-        <div class="skill-card">
-            <div class="skill-number">SYS_03</div>
-            <h3>3D ART</h3>
+
+        <div class="skill">
+            <div class="skill-num">SYS_03</div>
+
+            <h3>
+                ENVIRONMENT
+            </h3>
+
             <p>
-                Materials, lighting, composition
-                and visual development for
-                real-time environments.
+                Creating atmospheric worlds,
+                locations and environments
+                for games.
             </p>
         </div>
 
-        <div class="skill-card">
-            <div class="skill-number">SYS_04</div>
-            <h3>UNITY</h3>
+
+        <div class="skill">
+            <div class="skill-num">SYS_04</div>
+
+            <h3>
+                UNITY
+            </h3>
+
             <p>
-                Creating interactive prototypes
-                and game environments using
-                Unity.
+                Interactive prototypes,
+                game scenes and gameplay
+                implementation.
             </p>
         </div>
 
-        <div class="skill-card">
-            <div class="skill-number">SYS_05</div>
-            <h3>BLENDER / MAYA</h3>
+
+        <div class="skill">
+            <div class="skill-num">SYS_05</div>
+
+            <h3>
+                BLENDER / MAYA
+            </h3>
+
             <p>
-                Modeling, UV, materials and
-                asset preparation for
-                production pipelines.
+                Modeling, UV, materials,
+                lighting and asset preparation.
             </p>
         </div>
 
-        <div class="skill-card">
-            <div class="skill-number">SYS_06</div>
-            <h3>CREATIVE DESIGN</h3>
+
+        <div class="skill">
+            <div class="skill-num">SYS_06</div>
+
+            <h3>
+                CREATIVE DESIGN
+            </h3>
+
             <p>
-                Concept development,
-                visual storytelling and
+                Visual storytelling,
+                concept development and
                 world building.
             </p>
         </div>
@@ -762,64 +1018,99 @@ footer {
 </section>
 
 
+<!-- =========================
+     PROJECTS
+========================= -->
+
 <section id="projects">
 
-    <div class="section-label">
+    <div class="label">
         03 / ARCHIVE
     </div>
 
-    <div class="section-title">
+    <div class="title">
         Projects
     </div>
+
 
     <div class="projects">
 
         <div class="project">
-            <div class="project-number">01</div>
+
+            <div class="project-number">
+                PROJECT_01
+            </div>
 
             <div class="project-content">
-                <h3>POST APOCALYPTIC</h3>
+
+                <h3>
+                    POST APOCALYPTIC
+                </h3>
+
                 <p>
-                    Survival game world
-                    concept and environment.
+                    Survival game concept
+                    with environmental
+                    storytelling.
                 </p>
 
-                <span class="project-tag">
+                <span class="tag">
                     GAME DESIGN
                 </span>
+
             </div>
+
         </div>
 
+
         <div class="project">
-            <div class="project-number">02</div>
+
+            <div class="project-number">
+                PROJECT_02
+            </div>
 
             <div class="project-content">
-                <h3>3D ENVIRONMENT</h3>
+
+                <h3>
+                    3D ENVIRONMENT
+                </h3>
+
                 <p>
-                    Atmospheric 3D environment
+                    Atmospheric environment
                     designed for exploration.
                 </p>
 
-                <span class="project-tag">
+                <span class="tag">
                     3D ART
                 </span>
+
             </div>
+
         </div>
 
+
         <div class="project">
-            <div class="project-number">03</div>
+
+            <div class="project-number">
+                PROJECT_03
+            </div>
 
             <div class="project-content">
-                <h3>NEON WORLD</h3>
+
+                <h3>
+                    CYBER WORLD
+                </h3>
+
                 <p>
-                    Cyberpunk-inspired
-                    world building experiment.
+                    Futuristic world building
+                    and visual development.
                 </p>
 
-                <span class="project-tag">
+                <span class="tag">
                     WORLD BUILDING
                 </span>
+
             </div>
+
         </div>
 
     </div>
@@ -827,28 +1118,35 @@ footer {
 </section>
 
 
+<!-- =========================
+     CONTACT
+========================= -->
+
 <section id="contact" class="contact">
 
     <div>
 
-        <div class="section-label">
+        <div class="label">
             04 / TRANSMISSION
         </div>
 
         <h2>
             LET'S CREATE<br>
-            <span style="color:#cbd83d">
+            <span class="green">
                 SOMETHING
             </span>
         </h2>
 
         <p>
             Interested in games, 3D art,
-            world building and interactive
-            experiences.
+            environment design and
+            interactive experiences.
         </p>
 
-        <a href="mailto:your@email.com" class="btn">
+        <a
+            href="mailto:your@email.com"
+            class="btn"
+        >
             CONTACT ME
         </a>
 
@@ -856,19 +1154,32 @@ footer {
 
 </section>
 
-</main>
 
 <footer>
-    <span>KITTIPOP CHUMANEE</span>
-    <span>3D PORTFOLIO // 2026</span>
+
+    <span>
+        KITTIPOP CHUMANEE
+    </span>
+
+    <span>
+        3D PORTFOLIO // 2026
+    </span>
+
 </footer>
 
 
+<!-- =========================
+     THREE.JS
+========================= -->
+
 <script type="importmap">
 {
-    "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+    "imports":{
+        "three":
+        "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+
+        "three/addons/":
+        "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
     }
 }
 </script>
@@ -878,7 +1189,9 @@ footer {
 
 import * as THREE from 'three';
 
-import { OrbitControls } from
+import {
+    OrbitControls
+} from
 'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js';
 
 
@@ -886,16 +1199,17 @@ import { OrbitControls } from
 // SCENE
 // =====================================================
 
-const container =
-document.getElementById('canvas-container');
-
-const scene = new THREE.Scene();
+const scene =
+new THREE.Scene();
 
 scene.background =
-new THREE.Color(0x080b0b);
+new THREE.Color(0x070909);
 
 scene.fog =
-new THREE.FogExp2(0x080b0b, 0.045);
+new THREE.FogExp2(
+    0x070909,
+    0.045
+);
 
 
 // =====================================================
@@ -904,15 +1218,16 @@ new THREE.FogExp2(0x080b0b, 0.045);
 
 const camera =
 new THREE.PerspectiveCamera(
-    55,
-    window.innerWidth / window.innerHeight,
-    0.1,
+    45,
+    window.innerWidth /
+    window.innerHeight,
+    .1,
     100
 );
 
 camera.position.set(
     5,
-    3.5,
+    2.8,
     7
 );
 
@@ -923,12 +1238,14 @@ camera.position.set(
 
 const renderer =
 new THREE.WebGLRenderer({
-    antialias: true,
-    alpha: true
+    antialias:true
 });
 
 renderer.setPixelRatio(
-    Math.min(window.devicePixelRatio, 2)
+    Math.min(
+        window.devicePixelRatio,
+        2
+    )
 );
 
 renderer.setSize(
@@ -937,58 +1254,63 @@ renderer.setSize(
 );
 
 renderer.shadowMap.enabled = true;
+
 renderer.shadowMap.type =
 THREE.PCFSoftShadowMap;
 
 renderer.toneMapping =
 THREE.ACESFilmicToneMapping;
 
-renderer.toneMappingExposure = 1.15;
+renderer.toneMappingExposure =
+1.15;
 
-container.appendChild(renderer.domElement);
-
-
-// =====================================================
-// LIGHTS
-// =====================================================
-
-const ambient =
-new THREE.HemisphereLight(
-    0x9aa88a,
-    0x101312,
-    1.2
+document
+.getElementById('scene')
+.appendChild(
+    renderer.domElement
 );
 
-scene.add(ambient);
+
+// =====================================================
+// LIGHT
+// =====================================================
+
+scene.add(
+    new THREE.HemisphereLight(
+        0xb8c7a8,
+        0x111414,
+        1.5
+    )
+);
 
 
-const keyLight =
+const mainLight =
 new THREE.DirectionalLight(
-    0xdce7ce,
+    0xdce8d5,
     3
 );
 
-keyLight.position.set(
+mainLight.position.set(
     4,
     8,
     5
 );
 
-keyLight.castShadow = true;
+mainLight.castShadow = true;
 
-scene.add(keyLight);
+scene.add(mainLight);
 
 
 const greenLight =
 new THREE.PointLight(
-    0xcbd83d,
-    15,
-    15
+    0xd0df35,
+    18,
+    12
 );
 
 greenLight.position.set(
     0,
-    2,
+    2.5,
     2
 );
 
@@ -996,282 +1318,666 @@ scene.add(greenLight);
 
 
 // =====================================================
-// ENVIRONMENT
+// MATERIALS
 // =====================================================
 
-const environment =
+const darkMetal =
+new THREE.MeshStandardMaterial({
+    color:0x252b29,
+    metalness:.8,
+    roughness:.32
+});
+
+
+const metal =
+new THREE.MeshStandardMaterial({
+    color:0x4b514c,
+    metalness:.85,
+    roughness:.3
+});
+
+
+const blackMetal =
+new THREE.MeshStandardMaterial({
+    color:0x111514,
+    metalness:.75,
+    roughness:.38
+});
+
+
+const yellowMetal =
+new THREE.MeshStandardMaterial({
+    color:0x747c27,
+    metalness:.7,
+    roughness:.35
+});
+
+
+const glowing =
+new THREE.MeshStandardMaterial({
+    color:0xcbd83d,
+    emissive:0x9da91f,
+    emissiveIntensity:3,
+    metalness:.2,
+    roughness:.25
+});
+
+
+// =====================================================
+// CHARACTER
+// =====================================================
+
+const character =
 new THREE.Group();
 
-scene.add(environment);
+character.position.y =
+-.7;
+
+scene.add(character);
 
 
-// Ground
+// =====================================================
+// BODY
+// =====================================================
 
-const groundGeometry =
-new THREE.PlaneGeometry(
-    40,
-    40
+const body =
+new THREE.Mesh(
+    new THREE.BoxGeometry(
+        1.35,
+        1.8,
+        .75
+    ),
+    darkMetal
 );
 
-const groundMaterial =
-new THREE.MeshStandardMaterial({
-    color: 0x111514,
-    roughness: 0.95,
-    metalness: 0.1
-});
+body.position.y =
+2.5;
+
+body.castShadow = true;
+
+character.add(body);
+
+
+// chest armor
+
+const chest =
+new THREE.Mesh(
+    new THREE.BoxGeometry(
+        1.15,
+        .85,
+        .18
+    ),
+    metal
+);
+
+chest.position.set(
+    0,
+    2.65,
+    -.46
+);
+
+chest.castShadow = true;
+
+character.add(chest);
+
+
+// glowing chest core
+
+const core =
+new THREE.Mesh(
+    new THREE.BoxGeometry(
+        .35,
+        .35,
+        .08
+    ),
+    glowing
+);
+
+core.position.set(
+    0,
+    2.65,
+    -.57
+);
+
+character.add(core);
+
+
+// =====================================================
+// HEAD
+// =====================================================
+
+const head =
+new THREE.Mesh(
+    new THREE.BoxGeometry(
+        .9,
+        .85,
+        .85
+    ),
+    blackMetal
+);
+
+head.position.y =
+3.85;
+
+head.castShadow = true;
+
+character.add(head);
+
+
+// helmet
+
+const helmet =
+new THREE.Mesh(
+    new THREE.CylinderGeometry(
+        .53,
+        .53,
+        .25,
+        8
+    ),
+    metal
+);
+
+helmet.rotation.z =
+Math.PI / 2;
+
+helmet.position.y =
+4.35;
+
+character.add(helmet);
+
+
+// visor
+
+const visor =
+new THREE.Mesh(
+    new THREE.BoxGeometry(
+        .65,
+        .18,
+        .06
+    ),
+    glowing
+);
+
+visor.position.set(
+    0,
+    3.92,
+    -.46
+);
+
+character.add(visor);
+
+
+// =====================================================
+// SHOULDERS
+// =====================================================
+
+function createShoulder(x){
+
+    const shoulder =
+    new THREE.Mesh(
+        new THREE.SphereGeometry(
+            .38,
+            16,
+            12
+        ),
+        metal
+    );
+
+    shoulder.scale.y = .7;
+
+    shoulder.position.set(
+        x,
+        3.15,
+        0
+    );
+
+    shoulder.castShadow = true;
+
+    character.add(
+        shoulder
+    );
+
+}
+
+createShoulder(-.9);
+createShoulder(.9);
+
+
+// =====================================================
+// ARMS
+// =====================================================
+
+function createArm(x){
+
+    const arm =
+    new THREE.Group();
+
+    arm.position.set(
+        x,
+        2.7,
+        0
+    );
+
+    character.add(arm);
+
+
+    const upper =
+    new THREE.Mesh(
+        new THREE.CylinderGeometry(
+            .23,
+            .27,
+            1.05,
+            8
+        ),
+        darkMetal
+    );
+
+    upper.position.y =
+    -.55;
+
+    upper.rotation.z =
+    x > 0 ? -.08 : .08;
+
+    upper.castShadow = true;
+
+    arm.add(upper);
+
+
+    const elbow =
+    new THREE.Mesh(
+        new THREE.SphereGeometry(
+            .25,
+            12,
+            12
+        ),
+        yellowMetal
+    );
+
+    elbow.position.y =
+    -1.1;
+
+    arm.add(elbow);
+
+
+    const forearm =
+    new THREE.Mesh(
+        new THREE.BoxGeometry(
+            .42,
+            .8,
+            .42
+        ),
+        metal
+    );
+
+    forearm.position.y =
+    -1.5;
+
+    forearm.castShadow = true;
+
+    arm.add(forearm);
+
+
+    const hand =
+    new THREE.Mesh(
+        new THREE.BoxGeometry(
+            .35,
+            .35,
+            .35
+        ),
+        blackMetal
+    );
+
+    hand.position.y =
+    -2.05;
+
+    arm.add(hand);
+
+}
+
+createArm(-1);
+createArm(1);
+
+
+// =====================================================
+// BACKPACK
+// =====================================================
+
+const backpack =
+new THREE.Mesh(
+    new THREE.BoxGeometry(
+        1.05,
+        1.35,
+        .45
+    ),
+    blackMetal
+);
+
+backpack.position.set(
+    0,
+    2.55,
+    .58
+);
+
+backpack.castShadow = true;
+
+character.add(backpack);
+
+
+// backpack cylinders
+
+for(let i=0;i<2;i++){
+
+    const tank =
+    new THREE.Mesh(
+        new THREE.CylinderGeometry(
+            .16,
+            .16,
+            .9,
+            12
+        ),
+        metal
+    );
+
+    tank.position.set(
+        i===0 ? -.32 : .32,
+        2.6,
+        .88
+    );
+
+    character.add(tank);
+}
+
+
+// =====================================================
+// LEGS
+// =====================================================
+
+function createLeg(x){
+
+    const leg =
+    new THREE.Group();
+
+    leg.position.set(
+        x,
+        1.65,
+        0
+    );
+
+    character.add(leg);
+
+
+    const thigh =
+    new THREE.Mesh(
+        new THREE.BoxGeometry(
+            .45,
+            1,
+            .5
+        ),
+        darkMetal
+    );
+
+    thigh.position.y =
+    -.5;
+
+    thigh.castShadow = true;
+
+    leg.add(thigh);
+
+
+    const knee =
+    new THREE.Mesh(
+        new THREE.SphereGeometry(
+            .23,
+            12,
+            12
+        ),
+        yellowMetal
+    );
+
+    knee.position.y =
+    -1.05;
+
+    leg.add(knee);
+
+
+    const shin =
+    new THREE.Mesh(
+        new THREE.BoxGeometry(
+            .42,
+            .95,
+            .45
+        ),
+        metal
+    );
+
+    shin.position.y =
+    -1.55;
+
+    shin.castShadow = true;
+
+    leg.add(shin);
+
+
+    const foot =
+    new THREE.Mesh(
+        new THREE.BoxGeometry(
+            .55,
+            .25,
+            .85
+        ),
+        blackMetal
+    );
+
+    foot.position.set(
+        0,
+        -2.1,
+        -.12
+    );
+
+    foot.castShadow = true;
+
+    leg.add(foot);
+
+}
+
+createLeg(-.4);
+createLeg(.4);
+
+
+// =====================================================
+// WEAPON / TOOL
+// =====================================================
+
+const weapon =
+new THREE.Group();
+
+weapon.position.set(
+    1.35,
+    2.25,
+    -.1
+);
+
+weapon.rotation.z =
+-.15;
+
+character.add(weapon);
+
+
+const weaponBody =
+new THREE.Mesh(
+    new THREE.BoxGeometry(
+        .3,
+        1.5,
+        .3
+    ),
+    blackMetal
+);
+
+weaponBody.castShadow = true;
+
+weapon.add(
+    weaponBody
+);
+
+
+const weaponCore =
+new THREE.Mesh(
+    new THREE.BoxGeometry(
+        .12,
+        .8,
+        .08
+    ),
+    glowing
+);
+
+weaponCore.position.z =
+-.17;
+
+weapon.add(
+    weaponCore
+);
+
+
+const weaponTip =
+new THREE.Mesh(
+    new THREE.ConeGeometry(
+        .22,
+        .5,
+        8
+    ),
+    metal
+);
+
+weaponTip.rotation.z =
+Math.PI;
+
+weaponTip.position.y =
+-.9;
+
+weapon.add(
+    weaponTip
+);
+
+
+// =====================================================
+// ROTATION CONTROL
+// =====================================================
+
+const controls =
+new OrbitControls(
+    camera,
+    renderer.domElement
+);
+
+controls.enableDamping = true;
+
+controls.dampingFactor = .06;
+
+controls.enablePan = false;
+
+controls.minDistance = 4.5;
+
+controls.maxDistance = 10;
+
+controls.minPolarAngle =
+Math.PI * .35;
+
+controls.maxPolarAngle =
+Math.PI * .62;
+
+controls.target.set(
+    0,
+    2,
+    0
+);
+
+
+// =====================================================
+// GROUND
+// =====================================================
 
 const ground =
 new THREE.Mesh(
-    groundGeometry,
-    groundMaterial
+    new THREE.CircleGeometry(
+        7,
+        64
+    ),
+    new THREE.MeshStandardMaterial({
+        color:0x101413,
+        metalness:.2,
+        roughness:.95
+    })
 );
 
 ground.rotation.x =
 -Math.PI / 2;
 
+ground.position.y =
+-2.9;
+
 ground.receiveShadow = true;
 
-environment.add(ground);
-
-
-// Grid
-
-const grid =
-new THREE.GridHelper(
-    40,
-    40,
-    0x48501c,
-    0x202520
-);
-
-grid.position.y = 0.015;
-
-environment.add(grid);
+scene.add(ground);
 
 
 // =====================================================
-// CENTRAL INDUSTRIAL STRUCTURE
+// RING
 // =====================================================
 
-const structure =
-new THREE.Group();
-
-structure.position.y = 1;
-
-environment.add(structure);
-
-
-// Main tower
-
-const towerGeometry =
-new THREE.BoxGeometry(
-    2.4,
-    3.8,
-    2.4
-);
-
-const towerMaterial =
-new THREE.MeshStandardMaterial({
-    color: 0x252a27,
-    roughness: .72,
-    metalness: .5
-});
-
-const tower =
+const ring =
 new THREE.Mesh(
-    towerGeometry,
-    towerMaterial
-);
-
-tower.castShadow = true;
-tower.receiveShadow = true;
-
-structure.add(tower);
-
-
-// Tower top
-
-const topGeometry =
-new THREE.CylinderGeometry(
-    .8,
-    .8,
-    .35,
-    8
-);
-
-const topMaterial =
-new THREE.MeshStandardMaterial({
-    color: 0x373d38,
-    roughness: .45,
-    metalness: .7
-});
-
-const top =
-new THREE.Mesh(
-    topGeometry,
-    topMaterial
-);
-
-top.position.y = 2.05;
-
-top.castShadow = true;
-
-structure.add(top);
-
-
-// =====================================================
-// RINGS
-// =====================================================
-
-for(let i = 0; i < 3; i++){
-
-    const ring =
-    new THREE.Mesh(
-        new THREE.TorusGeometry(
-            1.45 + i*.22,
-            .025,
-            8,
-            64
-        ),
-        new THREE.MeshBasicMaterial({
-            color: 0x9cab2c
-        })
-    );
-
-    ring.rotation.x =
-    Math.PI / 2;
-
-    ring.position.y =
-    .5 + i*.7;
-
-    structure.add(ring);
-}
-
-
-// =====================================================
-// ANTENNA
-// =====================================================
-
-const antenna =
-new THREE.Mesh(
-    new THREE.CylinderGeometry(
-        .045,
-        .045,
-        3
-    ),
-    new THREE.MeshStandardMaterial({
-        color: 0x666c65,
-        metalness: .8,
-        roughness: .3
-    })
-);
-
-antenna.position.y = 4;
-
-structure.add(antenna);
-
-
-const antennaLight =
-new THREE.Mesh(
-    new THREE.SphereGeometry(
-        .12,
-        16,
-        16
+    new THREE.TorusGeometry(
+        3,
+        .025,
+        8,
+        100
     ),
     new THREE.MeshBasicMaterial({
-        color: 0xdce843
+        color:0xaebb31
     })
 );
 
-antennaLight.position.y = 5.5;
+ring.rotation.x =
+Math.PI / 2;
 
-structure.add(antennaLight);
+ring.position.y =
+-2.86;
 
-
-// =====================================================
-// FLOATING CUBES
-// =====================================================
-
-const floatingObjects = [];
-
-for(let i = 0; i < 18; i++){
-
-    const size =
-    .08 + Math.random() * .25;
-
-    const geometry =
-    new THREE.BoxGeometry(
-        size,
-        size,
-        size
-    );
-
-    const material =
-    new THREE.MeshStandardMaterial({
-        color:
-        Math.random() > .5
-        ? 0x4b514c
-        : 0x78842a,
-
-        metalness: .8,
-        roughness: .35
-    });
-
-    const cube =
-    new THREE.Mesh(
-        geometry,
-        material
-    );
-
-    const angle =
-    Math.random() * Math.PI * 2;
-
-    const radius =
-    3 + Math.random() * 5;
-
-    cube.position.set(
-        Math.cos(angle) * radius,
-        .5 + Math.random() * 5,
-        Math.sin(angle) * radius
-    );
-
-    cube.rotation.set(
-        Math.random(),
-        Math.random(),
-        Math.random()
-    );
-
-    environment.add(cube);
-
-    floatingObjects.push({
-        object: cube,
-        speed: .2 + Math.random() * .5,
-        offset: Math.random() * 10
-    });
-}
+scene.add(ring);
 
 
 // =====================================================
 // PARTICLES
 // =====================================================
 
-const particleCount = 900;
+const particleCount =
+700;
 
-const positions =
+const particlePositions =
 new Float32Array(
     particleCount * 3
 );
 
-for(let i = 0; i < particleCount; i++){
+for(
+    let i=0;
+    i<particleCount;
+    i++
+){
 
-    positions[i * 3] =
-    (Math.random() - .5) * 30;
+    particlePositions[
+        i*3
+    ] =
+    (Math.random()-.5)*25;
 
-    positions[i * 3 + 1] =
-    Math.random() * 12;
+    particlePositions[
+        i*3+1
+    ] =
+    Math.random()*12-2;
 
-    positions[i * 3 + 2] =
-    (Math.random() - .5) * 30;
+    particlePositions[
+        i*3+2
+    ] =
+    (Math.random()-.5)*25;
 }
 
 const particleGeometry =
@@ -1280,17 +1986,17 @@ new THREE.BufferGeometry();
 particleGeometry.setAttribute(
     'position',
     new THREE.BufferAttribute(
-        positions,
+        particlePositions,
         3
     )
 );
 
 const particleMaterial =
 new THREE.PointsMaterial({
-    color: 0xa7b52f,
-    size: .025,
-    transparent: true,
-    opacity: .55
+    color:0xb7c538,
+    size:.025,
+    transparent:true,
+    opacity:.55
 });
 
 const particles =
@@ -1303,56 +2009,56 @@ scene.add(particles);
 
 
 // =====================================================
-// CONTROLS
+// FLOATING DEBRIS
 // =====================================================
 
-const controls =
-new OrbitControls(
-    camera,
-    renderer.domElement
-);
+const debris =
+new THREE.Group();
 
-controls.enableDamping = true;
+scene.add(debris);
 
-controls.dampingFactor = .04;
+for(
+    let i=0;
+    i<25;
+    i++
+){
 
-controls.enablePan = false;
+    const s =
+    .05 +
+    Math.random()*.18;
 
-controls.minDistance = 4;
+    const cube =
+    new THREE.Mesh(
+        new THREE.BoxGeometry(
+            s,s,s
+        ),
+        Math.random()>.5
+        ? metal
+        : yellowMetal
+    );
 
-controls.maxDistance = 13;
+    const angle =
+    Math.random() *
+    Math.PI*2;
 
-controls.maxPolarAngle =
-Math.PI * .65;
+    const radius =
+    3.5 +
+    Math.random()*5;
 
-controls.target.set(
-    0,
-    1.8,
-    0
-);
+    cube.position.set(
+        Math.cos(angle)*radius,
+        Math.random()*6,
+        Math.sin(angle)*radius
+    );
 
+    cube.rotation.set(
+        Math.random(),
+        Math.random(),
+        Math.random()
+    );
 
-// =====================================================
-// MOUSE PARALLAX
-// =====================================================
-
-let mouseX = 0;
-let mouseY = 0;
-
-window.addEventListener(
-    'mousemove',
-    (event) => {
-
-        mouseX =
-        (event.clientX /
-        window.innerWidth - .5);
-
-        mouseY =
-        (event.clientY /
-        window.innerHeight - .5);
-
-    }
-);
+    debris.add(cube);
+}
 
 
 // =====================================================
@@ -1368,56 +2074,53 @@ function animate(){
         animate
     );
 
-    const elapsed =
+    const time =
     clock.getElapsedTime();
 
 
-    // Rotate environment
+    // character idle movement
 
-    structure.rotation.y =
-    elapsed * .12;
+    character.position.y =
+    -.7 +
+    Math.sin(time*1.2)*.035;
 
 
-    // Floating objects
+    character.rotation.y =
+    Math.sin(time*.35)*.05;
 
-    floatingObjects.forEach(
-        item => {
 
-            item.object.rotation.x +=
-            item.speed * .003;
+    // ring
 
-            item.object.rotation.y +=
-            item.speed * .004;
+    ring.rotation.z =
+    time*.12;
 
-            item.object.position.y +=
-            Math.sin(
-                elapsed * item.speed +
-                item.offset
-            ) * .0015;
+
+    // particles
+
+    particles.rotation.y =
+    time*.008;
+
+
+    // debris
+
+    debris.children.forEach(
+        (obj,index)=>{
+
+            obj.rotation.x +=
+            .001 +
+            index*.00001;
+
+            obj.rotation.y +=
+            .002;
         }
     );
 
 
-    // Particles
+    // light pulse
 
-    particles.rotation.y =
-    elapsed * .006;
-
-
-    // Subtle camera movement
-
-    if(!controls.state){
-
-        camera.position.x +=
-        (mouseX * .25 -
-        camera.position.x * .001) *
-        .02;
-
-        camera.position.y +=
-        (-mouseY * .15 +
-        3.5 * .001) *
-        .02;
-    }
+    greenLight.intensity =
+    15 +
+    Math.sin(time*3)*3;
 
 
     controls.update();
@@ -1437,7 +2140,7 @@ animate();
 
 window.addEventListener(
     'resize',
-    () => {
+    ()=>{
 
         camera.aspect =
         window.innerWidth /
@@ -1449,62 +2152,12 @@ window.addEventListener(
             window.innerWidth,
             window.innerHeight
         );
+
     }
-);
-
-
-// =====================================================
-// SMOOTH SECTION CAMERA EFFECT
-// =====================================================
-
-const sections =
-document.querySelectorAll(
-    'section'
-);
-
-const observer =
-new IntersectionObserver(
-    entries => {
-
-        entries.forEach(
-            entry => {
-
-                if(entry.isIntersecting){
-
-                    const id =
-                    entry.target.id;
-
-                    if(id === 'about'){
-                        controls.target.y = 1.5;
-                    }
-
-                    if(id === 'skills'){
-                        controls.target.y = 1.2;
-                    }
-
-                    if(id === 'projects'){
-                        controls.target.y = .8;
-                    }
-
-                    if(id === 'contact'){
-                        controls.target.y = 1;
-                    }
-                }
-            }
-        );
-
-    },
-    {
-        threshold: .35
-    }
-);
-
-sections.forEach(
-    section =>
-    observer.observe(section)
 );
 
 </script>
 
 </body>
 </html>
+```
