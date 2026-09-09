@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kittipop Chumanee — 3D Portfolio</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: #07090b;
+    color: #e8e8e8;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow-x: hidden;
+}
+
+canvas {
+    display: block;
+}
+
+:root {
+    --orange: #ff6a00;
+    --orange2: #ff9d42;
+    --dark: #07090b;
+    --panel: rgba(14,17,20,.86);
+    --line: rgba(255,106,0,.28);
+}
+
+/* ---------------- HEADER ---------------- */
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5vw;
+    background: rgba(5,7,8,.75);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+}
+
+.logo {
+    font-size: 14px;
+    letter-spacing: 4px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: var(--orange);
+}
+
+nav {
+    display: flex;
+    gap: 30px;
+}
+
+nav a {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 2px;
+    transition: .3s;
+}
+
+nav a:hover {
+    color: var(--orange);
+}
+
+/* ---------------- HERO ---------------- */
+
+.hero {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 100px 7vw 60px;
+    overflow: hidden;
+}
+
+#heroCanvas {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(255,255,255,.018) 0px,
+            rgba(255,255,255,.018) 1px,
+            transparent 1px,
+            transparent 5px
+        );
+    z-index: 2;
+}
+
+.heroContent {
+    position: relative;
+    z-index: 5;
+    max-width: 620px;
+}
+
+.kicker {
+    color: var(--orange);
+    letter-spacing: 5px;
+    font-size: 11px;
+    margin-bottom: 20px;
+}
+
+.hero h1 {
+    font-size: clamp(50px, 9vw, 110px);
+    line-height: .85;
+    letter-spacing: -5px;
+    text-transform: uppercase;
+}
+
+.hero h1 span {
+    color: var(--orange);
+}
+
+.hero p {
+    margin-top: 30px;
+    max-width: 500px;
+    color: #9b9b9b;
+    line-height: 1.8;
+    font-size: 14px;
+}
+
+.status {
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #aaa;
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+.dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--orange);
+    box-shadow: 0 0 15px var(--orange);
+}
+
+/* ---------------- SECTIONS ---------------- */
+
+section {
+    position: relative;
+    padding: 120px 7vw;
+    border-top: 1px solid rgba(255,255,255,.06);
+}
+
+.sectionTitle {
+    margin-bottom: 60px;
+}
+
+.sectionTitle small {
+    color: var(--orange);
+    letter-spacing: 4px;
+    font-size: 10px;
+}
+
+.sectionTitle h2 {
+    margin-top: 10px;
+    font-size: clamp(35px, 5vw, 65px);
+    text-transform: uppercase;
+}
+
+/* ---------------- ABOUT ---------------- */
+
+.aboutGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+}
+
+.aboutText {
+    color: #999;
+    line-height: 2;
+    font-size: 14px;
+}
+
+.info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+}
+
+.infoBox {
+    background: var(--panel);
+    border: 1px solid rgba(255,255,255,.07);
+    padding: 25px;
+}
+
+.infoBox label {
+    display: block;
+    color: #666;
+    font-size: 9px;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+}
+
+.infoBox strong {
+    font-size: 17px;
+}
+
+/* ---------------- 3D SHOWCASE ---------------- */
+
+.showcase {
+    background:
+        radial-gradient(circle at center, rgba(255,106,0,.08), transparent 40%),
+        #080a0c;
+}
+
+.modelLayout {
+    display: grid;
+    grid-template-columns: 1.7fr .8fr;
+    gap: 25px;
+}
+
+.modelViewer {
+    position: relative;
+    height: 650px;
+    border: 1px solid rgba(255,106,0,.3);
+    background:
+        linear-gradient(rgba(255,106,0,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,106,0,.03) 1px, transparent 1px),
+        #080a0c;
+    background-size: 40px 40px;
+    overflow: hidden;
+}
+
+#modelCanvas {
+    width: 100%;
+    height: 100%;
+}
+
+.viewerLabel {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 5;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--orange);
+}
+
+.viewerHint {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    z-index: 5;
+    color: #777;
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+.modelInfo {
+    border: 1px solid rgba(255,255,255,.07);
+    background: var(--panel);
+    padding: 30px;
+}
+
+.modelInfo h3 {
+    color: var(--orange);
+    letter-spacing: 3px;
+    margin-bottom: 25px;
+}
+
+.spec {
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.spec span {
+    color: #666;
+    display: block;
+    font-size: 9px;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+}
+
+.spec strong {
+    font-size: 13px;
+}
+
+/* ---------------- SHADER ---------------- */
+
+.shaderSection {
+    background: #050607;
+}
+
+.shaderGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.shaderCard {
+    border: 1px solid rgba(255,106,0,.25);
+    background: #0b0d0f;
+    padding: 30px;
+}
+
+.shaderCard h3 {
+    margin-bottom: 15px;
+    color: var(--orange);
+    letter-spacing: 2px;
+}
+
+.shaderCard p {
+    color: #777;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.shaderCode {
+    margin-top: 20px;
+    padding: 20px;
+    background: #050607;
+    border-left: 2px solid var(--orange);
+    color: #aaa;
+    font-family: monospace;
+    font-size: 11px;
+    line-height: 1.7;
+    overflow-x: auto;
+}
+
+/* ---------------- SKILLS ---------------- */
+
+.skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.skill {
+    padding: 13px 18px;
+    border: 1px solid rgba(255,106,0,.3);
+    background: rgba(255,106,0,.04);
+    color: #bbb;
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+/* ---------------- FOOTER ---------------- */
+
+footer {
+    padding: 40px 7vw;
+    border-top: 1px solid rgba(255,255,255,.07);
+    display: flex;
+    justify-content: space-between;
+    color: #555;
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+
+@media(max-width: 800px) {
+
+    nav {
+        display: none;
+    }
+
+    .aboutGrid,
+    .modelLayout,
+    .shaderGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .modelViewer {
+        height: 500px;
+    }
+
+    .hero h1 {
+        letter-spacing: -3px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">KITTIPOP<span>.</span>3D</div>
+
+    <nav>
+        <a href="#about">ABOUT</a>
+        <a href="#models">3D MODELS</a>
+        <a href="#shader">SHADER</a>
+        <a href="#skills">SKILLS</a>
+    </nav>
+</header>
+
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+    <canvas id="heroCanvas"></canvas>
+
+    <div class="heroContent">
+
+        <div class="kicker">
+            3D ARTIST / GAME DESIGNER
+        </div>
+
+        <h1>
+            Kitti<span>pop</span><br>
+            Chumanee
+        </h1>
+
+        <p>
+            Creating 3D assets, environments and interactive experiences
+            through modeling, materials, lighting and real-time rendering.
+        </p>
+
+        <div class="status">
+            <div class="dot"></div>
+            AVAILABLE FOR CREATIVE WORK
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ================= ABOUT ================= -->
+
+<section id="about">
+
+    <div class="sectionTitle">
+        <small>01 / PROFILE</small>
+        <h2>About Me</h2>
+    </div>
+
+    <div class="aboutGrid">
+
+        <div class="aboutText">
+            I am a 21-year-old creative student interested in
+            3D modeling, game development and interactive media.
+
+            <br><br>
+
+            My focus is creating detailed 3D assets with
+            realistic PBR materials, lighting and real-time
+            rendering techniques.
+        </div>
+
+        <div class="info">
+
+            <div class="infoBox">
+                <label>NAME</label>
+                <strong>Kittipop Chumanee</strong>
+            </div>
+
+            <div class="infoBox">
+                <label>NICKNAME</label>
+                <strong>Pob</strong>
+            </div>
+
+            <div class="infoBox">
+                <label>AGE</label>
+                <strong>21 Y</strong>
+            </div>
+
+            <div class="infoBox">
+                <label>BIRTHDAY</label>
+                <strong>04 / 02 / 2005</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= 3D MODELS ================= -->
+
+<section id="models" class="showcase">
+
+    <div class="sectionTitle">
+        <small>02 / ASSET LAB</small>
+        <h2>3D Models</h2>
+    </div>
+
+    <div class="modelLayout">
+
+        <div class="modelViewer">
+
+            <div class="viewerLabel">
+                INTERACTIVE 3D VIEWER
+            </div>
+
+            <canvas id="modelCanvas"></canvas>
+
+            <div class="viewerHint">
+                DRAG TO ROTATE / SCROLL TO ZOOM
+            </div>
+
+        </div>
+
+        <div class="modelInfo">
+
+            <h3>MODEL_001</h3>
+
+            <div class="spec">
+                <span>FORMAT</span>
+                <strong>FBX / OBJ</strong>
+            </div>
+
+            <div class="spec">
+                <span>MATERIAL</span>
+                <strong>PBR METAL / ROUGHNESS</strong>
+            </div>
+
+            <div class="spec">
+                <span>RENDER</span>
+                <strong>THREE.JS / WEBGL</strong>
+            </div>
+
+            <div class="spec">
+                <span>LIGHTING</span>
+                <strong>HDRI + AREA LIGHT</strong>
+            </div>
+
+            <div class="spec">
+                <span>INTERACTION</span>
+                <strong>MOUSE ORBIT CONTROL</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= SHADER ================= -->
+
+<section id="shader" class="shaderSection">
+
+    <div class="sectionTitle">
+        <small>03 / GRAPHICS</small>
+        <h2>Shader Lab</h2>
+    </div>
+
+    <div class="shaderGrid">
+
+        <div class="shaderCard">
+
+            <h3>HOLOGRAM SHADER</h3>
+
+            <p>
+                Basic shader technique using UV coordinates,
+                time animation and scanline effects to create
+                a futuristic holographic material.
+            </p>
+
+            <div class="shaderCode">
+                float scanline =
+                sin(vUv.y * 80.0 + uTime * 4.0);
+
+                vec3 color =
+                vec3(1.0, 0.25, 0.02);
+
+                gl_FragColor =
+                vec4(color * scanline, 1.0);
+            </div>
+
+        </div>
+
+
+        <div class="shaderCard">
+
+            <h3>EDGE / FRESNEL</h3>
+
+            <p>
+                Fresnel effect highlights the edges of the
+                object, creating a sci-fi material appearance.
+            </p>
+
+            <div class="shaderCode">
+                float fresnel =
+                pow(
+                    1.0 - dot(viewDir, normal),
+                    3.0
+                );
+
+                color +=
+                fresnel * vec3(1.0, .2, .02);
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= SKILLS ================= -->
+
+<section id="skills">
+
+    <div class="sectionTitle">
+        <small>04 / TOOLSET</small>
+        <h2>Skills</h2>
+    </div>
+
+    <div class="skills">
+
+        <div class="skill">MAYA</div>
+        <div class="skill">BLENDER</div>
+        <div class="skill">THREE.JS</div>
+        <div class="skill">UNITY</div>
+        <div class="skill">PBR MATERIAL</div>
+        <div class="skill">UV MAPPING</div>
+        <div class="skill">LIGHTING</div>
+        <div class="skill">SHADER</div>
+        <div class="skill">3D MODELING</div>
+        <div class="skill">GAME DESIGN</div>
+
+    </div>
+
+</section>
+
+
+<footer>
+    <span>KITTIPOP CHUMANEE</span>
+    <span>3D PORTFOLIO / 2026</span>
+</footer>
+
+
+<!-- ================= THREE.JS ================= -->
+
+<script type="module">
+
+import * as THREE from
+'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js';
+
+import { OrbitControls } from
+'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js';
+
+import { FBXLoader } from
+'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/FBXLoader.js';
+
+import { OBJLoader } from
+'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/OBJLoader.js';
+
+
+/* =========================================================
+   HERO 3D
+========================================================= */
+
+const heroCanvas =
+document.getElementById("heroCanvas");
+
+const heroScene =
+new THREE.Scene();
+
+heroScene.fog =
+new THREE.FogExp2(0x07090b, 0.035);
+
+const heroCamera =
+new THREE.PerspectiveCamera(
+    60,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    100
+);
+
+heroCamera.position.set(0, 2, 8);
+
+const heroRenderer =
+new THREE.WebGLRenderer({
+    canvas: heroCanvas,
+    antialias: true,
+    alpha: true
+});
+
+heroRenderer.setPixelRatio(
+    Math.min(window.devicePixelRatio, 2)
+);
+
+heroRenderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+);
+
+
+/* GRID */
+
+const grid =
+new THREE.GridHelper(
+    40,
+    40,
+    0xff6a00,
+    0x222222
+);
+
+grid.material.opacity = .18;
+grid.material.transparent = true;
+
+heroScene.add(grid);
+
+
+/* PARTICLES */
+
+const particleGeometry =
+new THREE.BufferGeometry();
+
+const particleCount = 1200;
+
+const positions =
+new Float32Array(particleCount * 3);
+
+for(let i = 0; i < particleCount * 3; i += 3) {
+
+    positions[i] =
+    (Math.random() - .5) * 30;
+
+    positions[i+1] =
+    Math.random() * 15;
+
+    positions[i+2] =
+    (Math.random() - .5) * 30;
+}
+
+particleGeometry.setAttribute(
+    "position",
+    new THREE.BufferAttribute(
+        positions,
+        3
+    )
+);
+
+const particleMaterial =
+new THREE.PointsMaterial({
+    color: 0xff6a00,
+    size: .025,
+    transparent: true,
+    opacity: .6
+});
+
+const particles =
+new THREE.Points(
+    particleGeometry,
+    particleMaterial
+);
+
+heroScene.add(particles);
+
+
+/* ORB */
+
+const orb =
+new THREE.Mesh(
+    new THREE.IcosahedronGeometry(1.5, 2),
+    new THREE.MeshStandardMaterial({
+        color: 0x16191c,
+        metalness: .9,
+        roughness: .25,
+        emissive: 0x331000
+    })
+);
+
+orb.position.set(3, 1, -2);
+
+heroScene.add(orb);
+
+
+/* LIGHT */
+
+const orangeLight =
+new THREE.PointLight(
+    0xff5a00,
+    20,
+    12
+);
+
+orangeLight.position.set(
+    3,
+    2,
+    2
+);
+
+heroScene.add(orangeLight);
+
+const whiteLight =
+new THREE.PointLight(
+    0xffffff,
+    8,
+    15
+);
+
+whiteLight.position.set(
+    -4,
+    5,
+    3
+);
+
+heroScene.add(whiteLight);
+
+
+/* =========================================================
+   MODEL VIEWER
+========================================================= */
+
+const modelCanvas =
+document.getElementById("modelCanvas");
+
+const modelScene =
+new THREE.Scene();
+
+modelScene.background =
+new THREE.Color(0x080a0c);
+
+const modelCamera =
+new THREE.PerspectiveCamera(
+    45,
+    modelCanvas.clientWidth /
+    modelCanvas.clientHeight,
+    .01,
+    100
+);
+
+modelCamera.position.set(
+    4,
+    2.5,
+    6
+);
+
+const modelRenderer =
+new THREE.WebGLRenderer({
+    canvas: modelCanvas,
+    antialias: true
+});
+
+modelRenderer.setPixelRatio(
+    Math.min(window.devicePixelRatio, 2)
+);
+
+modelRenderer.setSize(
+    modelCanvas.clientWidth,
+    modelCanvas.clientHeight,
+    false
+);
+
+modelRenderer.outputColorSpace =
+THREE.SRGBColorSpace;
+
+modelRenderer.toneMapping =
+THREE.ACESFilmicToneMapping;
+
+modelRenderer.toneMappingExposure = 1.1;
+
+
+/* CONTROLS */
+
+const controls =
+new OrbitControls(
+    modelCamera,
+    modelCanvas
+);
+
+controls.enableDamping = true;
+controls.dampingFactor = .06;
+controls.minDistance = 2;
+controls.maxDistance = 12;
+
+
+/* LIGHTING */
+
+const hemi =
+new THREE.HemisphereLight(
+    0xffffff,
+    0x111111,
+    2
+);
+
+modelScene.add(hemi);
+
+const key =
+new THREE.DirectionalLight(
+    0xffffff,
+    4
+);
+
+key.position.set(
+    4,
+    6,
+    5
+);
+
+modelScene.add(key);
+
+const orange =
+new THREE.PointLight(
+    0xff5a00,
+    30,
+    10
+);
+
+orange.position.set(
+    -3,
+    2,
+    2
+);
+
+modelScene.add(orange);
+
+
+/* FLOOR */
+
+const floor =
+new THREE.Mesh(
+    new THREE.CircleGeometry(6, 64),
+    new THREE.MeshStandardMaterial({
+        color: 0x0d1012,
+        metalness: .7,
+        roughness: .35
+    })
+);
+
+floor.rotation.x =
+-Math.PI / 2;
+
+floor.position.y = -1.5;
+
+modelScene.add(floor);
+
+
+/* =========================================================
+   PROCEDURAL PBR DEMO
+========================================================= */
+
+const demoGroup =
+new THREE.Group();
+
+modelScene.add(demoGroup);
+
+const metalMaterial =
+new THREE.MeshStandardMaterial({
+    color: 0x66686a,
+    metalness: .95,
+    roughness: .22
+});
+
+
+/* Main object */
+
+const body =
+new THREE.Mesh(
+    new THREE.IcosahedronGeometry(
+        1.35,
+        2
+    ),
+    metalMaterial
+);
+
+demoGroup.add(body);
+
+
+/* Rings */
+
+for(let i = 0; i < 3; i++) {
+
+    const ring =
+    new THREE.Mesh(
+        new THREE.TorusGeometry(
+            1.7 + i * .25,
+            .018,
+            8,
+            100
+        ),
+        new THREE.MeshBasicMaterial({
+            color: 0xff6a00
+        })
+    );
+
+    ring.rotation.x =
+    Math.PI / 2;
+
+    ring.rotation.z =
+    i * .5;
+
+    demoGroup.add(ring);
+}
+
+
+/* =========================================================
+   FBX / OBJ LOADING
+========================================================= */
+
+/*
+
+To load your own FBX:
+
+loadFBX("models/myModel.fbx");
+
+To load OBJ:
+
+loadOBJ("models/myModel.obj");
+
+Make sure the model exists relative
+to index.html.
+
+*/
+
+function loadFBX(url) {
+
+    const loader =
+    new FBXLoader();
+
+    loader.load(
+        url,
+
+        function(object) {
+
+            object.scale.setScalar(.01);
+
+            object.traverse(
+                function(child) {
+
+                    if(child.isMesh) {
+
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+
+                        child.material =
+                        new THREE.MeshStandardMaterial({
+                            color: 0x777777,
+                            metalness: .8,
+                            roughness: .25
+                        });
+                    }
+                }
+            );
+
+            modelScene.add(object);
+        },
+
+        undefined,
+
+        function(error) {
+
+            console.log(
+                "FBX loading error:",
+                error
+            );
+
+        }
+    );
+}
+
+
+function loadOBJ(url) {
+
+    const loader =
+    new OBJLoader();
+
+    loader.load(
+        url,
+
+        function(object) {
+
+            object.traverse(
+                function(child) {
+
+                    if(child.isMesh) {
+
+                        child.material =
+                        new THREE.MeshStandardMaterial({
+                            color: 0x777777,
+                            metalness: .85,
+                            roughness: .25
+                        });
+
+                    }
+                }
+            );
+
+            modelScene.add(object);
+        }
+    );
+}
+
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+const clock =
+new THREE.Clock();
+
+function animate() {
+
+    requestAnimationFrame(
+        animate
+    );
+
+    const time =
+    clock.getElapsedTime();
+
+    /* HERO */
+
+    orb.rotation.x =
+    time * .18;
+
+    orb.rotation.y =
+    time * .3;
+
+    particles.rotation.y =
+    time * .015;
+
+    grid.position.z =
+    (time * .4) % 1;
+
+    heroRenderer.render(
+        heroScene,
+        heroCamera
+    );
+
+
+    /* MODEL */
+
+    demoGroup.rotation.y =
+    time * .18;
+
+    controls.update();
+
+    modelRenderer.render(
+        modelScene,
+        modelCamera
+    );
+}
+
+animate();
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        heroCamera.aspect =
+        window.innerWidth /
+        window.innerHeight;
+
+        heroCamera.updateProjectionMatrix();
+
+        heroRenderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+
+
+        const width =
+        modelCanvas.clientWidth;
+
+        const height =
+        modelCanvas.clientHeight;
+
+        modelCamera.aspect =
+        width / height;
+
+        modelCamera.updateProjectionMatrix();
+
+        modelRenderer.setSize(
+            width,
+            height,
+            false
+        );
+    }
+);
+
+</script>
+
+</body>
+</html>
